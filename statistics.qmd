@@ -1,0 +1,516 @@
+---
+title: "Basics of Statistics"
+author: "R Trainer: Binod Jung Bogati (linkedin.com/in/bjungbogati)"
+copyright: "© 2025. Unauthorized distribution or reuse prohibited."
+format: html
+editor: visual
+---
+
+
+## Variable
+
+Any characteristic, number, or quantity that can be measured or counted.
+
+Age, sex, country, birth date etc are examples of variables.
+
+## Types of Variables
+
+Variables are classified into two types:
+
+-   Categorical Variable
+-   Numerical Variable
+
+## Categorical
+
+The variables which has distinct categories according to some characteristics or attribute.
+They can be classified into two types:
+
+-   Nominal Variables
+-   Ordinal Variables
+
+## Types
+
+Nominal variable has two or more categories, without any implied ordering.
+
+-   Gender - Male, Female
+-   Marital Status - Unmarried, Married, Divorcee
+
+Ordinal variable has two or more categories, with clear ordering.
+
+-   Scale - Strongly Disagree, Disagree, Neutral, Agree, Strongly Agree
+-   Rating - Very low, Low, Medium, High, Very High
+
+## Numerical
+
+The variables that can be counted or measured.
+They can be classified into two types:
+
+-   Discrete Variables
+-   Continous Variables
+
+## Types
+
+Discrete variables are countable in a finite amount of time.
+
+-   No of hospital visits, Dose per day, IQ score
+
+Continuous variables are measurable that takes any value within a range (infinite).
+
+-   Measurements in height, weight, temperature etc
+
+# Descriptive Statistics
+
+## Measure of Central Tendency
+
+It describes a whole set of data with a single value that represents the centre of its distribution.
+There are three main measures of central tendency: - mean - median - mode
+
+## Mean
+
+It is the sum of the observations divided by the sample size.
+
+Age = 54, 54, 54, 55, 56, 57, 57, 58, 58, 60, 60.
+
+(54 + 54 + 54 + 55 + 56 + 57 + 57 + 58 + 58 + 60 + 60 ) / 11 = 56.63
+
+## Median
+
+It is the middle value of data point.
+
+Age = 54, 54, 54, 55, 56, 57, 57, 58, 58, 60, 60
+
+(11 + 1) / 2 = 6th place
+
+## Mode
+
+It is the value that occurs most frequently in a dataset
+
+Age = 54, 54, 54, 55, 56, 57, 57, 58, 58, 60, 60
+
+```{r}
+table(Age = c(54, 54, 54, 55, 56, 57, 57, 58, 58, 60, 60)) |> data.frame() 
+```
+
+## When to use?
+
+Mean – When there are no extreme values present in the data set (Outliers).
+
+Median – When your data is skewed or you are dealing with ordinal (ordered categories) data (e.g. like 1. Very low, 2. Low, 3. Medium, 4. High, 5. Very High)
+
+Mode - When dealing with nominal (unordered categories) data.
+
+```{r}
+install.packages(c("e1071", "corrplot"))
+
+library(tidyverse)
+library(e1071)
+library(corrplot)
+
+load(url("https://bit.ly/3UkN5ds"))
+
+```
+
+## Your Turn 01
+
+A nurse recorded the systolic blood pressure readings (mmHg) of 10 patients during a routine check-up:
+
+Questions:
+
+1.  Calculate the average blood pressure.
+
+2.  Find the central reading for blood pressure.
+
+3.  Identify the most common blood pressure reading.
+
+```{r}
+
+View(patient)
+
+## Question 3
+
+... |> 
+  count(...., sort = TRUE) |> 
+  filter(n == max(n)) |> 
+  pull(...)
+
+
+```
+
+## Measure of Dispersion
+
+It refers to the spread or dispersion of scores.
+
+There are four main measures of variability:
+
+-   Range, Quartiles, Standard deviation and Variance.
+
+### Range
+
+The range is the simplest measure of dispersion, representing the difference between the maximum and minimum values in a dataset.
+
+> Range = Maximum Value − Minimum Value
+
+Use Case: - Quick snapshot of data spread.
+
+Simple but Sensitive: - Easy to calculate but heavily influenced by outliers (extreme values).
+
+## Quartiles
+
+It divides the ordered dataset into four equal parts.
+
+-   The lower quartile (Q1) - It is called the 25th percentile.
+-   The second quartile (Q2) - It is called 50th percentile, or the median.
+-   The upper quartile (Q3) - It is called the 75th percentile.
+
+### Inter Quartile Range (IQR)
+
+The IQR measures the spread of the middle 50% of data.
+It is calculated as:
+
+> IQR = Q3 (75th percentile) − Q1 (25th percentile)
+
+Key Properties:
+
+-   Robust to Outliers: Unlike range or standard deviation, the IQR ignores extreme values.
+-   Describes Variability: A larger IQR means more spread in the central data.
+-   Used for Outlier Detection: Values outside Q1 − 1.5×IQR or *Q3 + 1.5×IQR* are often flagged as outliers.
+
+## Variance and SD
+
+-   Variance (Var)
+
+Measures how far each data point is from the mean (average of squared differences).
+
+-   Standard Deviation (SD)
+
+It is a measure of spread of data about the mean.
+
+## Your Turn 02
+ 
+### Question
+
+1.  Calculate the range of exam_score.
+    How spread out are the scores?
+
+2.  Find the IQR for study_hours.
+    What does this tell you about the middle 50% of students?
+
+3.  Find the 25th percentile (Q1), median (Q2), and 75th percentile (Q3) for study_hours.
+
+4.  Compute the SD of sleep_hours.
+    Is sleep duration consistent or highly variable across students?
+
+5. Which variable has the highest variability (study_hours, exam_score, or sleep_hours)?
+Use SD to justify your answer.
+
+6.  Are there outliers in exam_score?
+
+### Answer
+
+```{r}
+# 1
+range(...)
+
+# 2
+IQR(...)
+
+# 3.
+quantile(..., probs = c(0.25, 0.5, 0.75)) # Q1 = 0.25, Q2 = 0.5, Q3 = 0.75
+
+# 4
+sd(...)
+
+# 5
+var(...)
+
+# 6.  
+
+quant <- quantile(..., probs = c(0.25, 0.5, 0.75))
+iqr_range <- IQR(...)
+
+quant[1] - 1.5 * iqr_range # Q1 − 1.5×IQR or Q3 + 1.5×IQR 
+
+```
+
+
+
+# Covariance and Correlation
+
+## Data
+
+```{r}
+#| echo: false
+head(student)
+```
+
+## Covariance
+
+Covariance is the measure of the relation between two variables of a dataset.
+
+-   Positive Covariance: Variables move in the same direction.
+-   Negative Covariance: Variables move inversely.
+-   Zero Covariance: No linear relationship.
+
+```{r}
+# Study Hours vs Exam Score
+cov(student$study_hours, student$exam_score)
+```
+
+## Plot
+
+```{r}
+ggplot(student, aes(x = study_hours, y = exam_score)) +
+  geom_point(color = "blue", size = 3) +
+  geom_smooth(method = "lm", se = FALSE, color = "red") +  # Add regression line
+  labs(title = "Study Hours vs Exam Score", x = "Study Hours", y = "Exam Score") +
+  theme_minimal()
+```
+
+## Correlation
+
+Correlation measures the strength and direction of a linear relationship (standardized covariance).
+
+-   −1 is perfect negative
+-   +1 is perfect positive
+-   0 means no linear relationship.
+
+```{r}
+cor(student$study_hours, student$exam_score)
+```
+
+## Plot
+
+```{r}
+#| echo: false
+cor_matrix <- cor(student)
+corrplot(cor_matrix, method = 'shade', order = 'alphabet')
+```
+
+## Normal Distribution
+
+A symmetric, bell-shaped distribution where most values cluster around the mean (μ), with probabilities tapering off equally in both directions.
+
+Here, Mean = Median = Mode
+
+Example: Blood pressure measurements (continuous data) in a healthy adult population.
+
+-   Mean (μ) = 120 mmHg
+-   Standard Deviation (σ) = 10 mmHg
+
+## Plot
+
+```{r}
+#| echo: false
+set.seed(123)
+blood_pressure <- rnorm(n=1000, mean=120, sd=10)
+# Plot
+hist(blood_pressure, breaks=30, main="Normal Distribution of Blood Pressure", xlab="Blood Pressure (mmHg)", col="lightblue")
+abline(v=120, col="red", lwd=2)  # Mean
+```
+
+## Binomial Distribution
+
+Models the number of successes (*k*) in *n* independent trials, each with success probability *p*.
+
+Example: Drug efficacy trial where 100 patients are treated, with a 70% success rate.
+n = 100 (patients) p = 0.7 (success probability)
+
+## Plot
+
+```{r}
+#| echo: false
+# Binomial probabilities
+k <- 0:100  # Possible successes
+prob <- dbinom(k, size=100, prob=0.7)
+
+# Plot
+plot(k, prob, type="h", lwd=2, main="Binomial Distribution (n=100, p=0.7)", 
+     xlab="Number of Successes", ylab="Probability")
+```
+
+## Skewness
+
+It is a measure of symmetry.
+A distribution is symmetric if it looks the same to the left and right of the center point.
+
+-   0: Perfectly symmetrical data (e.g., normal distribution)
+-   -0.5 to 0.5: Approximately symmetric
+-   -1 to -0.5 (or 0.5 to 1): Moderately skewed
+-   \< -1 or \> 1: Highly skewed
+
+```{r}
+hist(mtcars$mpg)
+```
+
+## Kurtosis
+
+It is a measure of whether the data are peaked or flat relative to the rest of the data.
+Higher values indicate a higher, sharper peak; lower values indicate a lower, less distinct peak.
+
+-   Excess kurtosis = 0: Tails identical to a normal distribution.
+-   Excess kurtosis \> 0: Heavier tails (more outliers) than normal (leptokurtic).
+-   Excess kurtosis \< 0: Lighter tails (fewer outliers) than normal (platykurtic)
+
+```{r}
+# Create a histogram with density plot
+ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram(aes(y = ..density..), bins = 30, fill = "lightblue", color = "black", alpha = 0.7) +
+  geom_density(color = "red", size = 1.2) +
+  labs(title = "Histogram with Density Curve", x = "Values", y = "Density") +
+  theme_minimal()
+```
+
+## Your Turn 03
+
+For `mpg` (Miles per Gallon) variable from `mtcars` dataset.
+
+Calculate the skewness.
+- Is the distribution symmetric, left-skewed, or right-skewed?
+- What does this imply about the typical car's fuel efficiency in this dataset?
+
+Calculate the kurtosis.
+- Does the distribution have heavy tails (outlier-prone) or light tails (peaked around the mean)?
+- Compare it to a normal distribution (kurtosis = 3).
+
+```{r}
+head(mtcars)
+
+skewness(....)
+
+kurtosis(....)
+
+```
+
+
+## Null vs. Alternative Hypothesis
+
+1.  Null Hypothesis (H₀):
+
+Default assumption (e.g., "no effect," "no difference," "no correlation").
+
+Example: "There is no correlation between study hours and exam scores (ρ = 0)."
+
+2.  Alternative Hypothesis (H₁):
+
+What you aim to prove (e.g., "an effect exists").
+
+Example: "There is a correlation between study hours and exam scores (ρ ≠ 0)."
+
+## Type I Error (False positive)
+
+What it is: Mistakenly concluding there’s an effect/difference when there isn’t.
+
+Example: A COVID test says you’re positive (rejects H₀), but you’re actually negative (H₀ was true).
+
+Consequences:
+
+-   Unnecessary treatments ("false alarm").
+-   Wasted resources chasing ghosts.
+
+Control Measure:
+
+-   Set a strict significance threshold (α = 0.05).
+-   Lower α (e.g., 0.01) reduces false alarms but makes it harder to detect real effects.
+
+## Type II Error (False negative)
+
+What it is: Failing to detect an effect/difference when one actually exists.
+
+Example: A pregnancy test says you’re negative (fails to reject H₀), but you’re actually pregnant (H₁ was true).
+
+Consequences:
+
+-   Missing real discoveries (e.g., a life-saving drug).
+-   False sense of security.
+
+Control:
+
+-   Increase sample size for test (more data = better detection).
+-   Use higher power (1-β) (aim for ≥80%).
+
+## Question
+
+
+### Your Turn 04
+
+Justice System:
+
+-   A. Letting a guilty person go free
+-   B. Convicting an innoncent person
+
+
+### Your Turn 05
+
+Spam Filter:
+
+-   A. Marking a real email as spam.
+-   B. Letting spam into your inbox.
+
+
+## Standard Error
+
+The Standard Error (SE) measures how much a sample statistic (like a mean or correlation) would "jump around" if you repeated your study many times.
+It quantifies the uncertainty in your estimate.
+
+1.  Core Concept Problem: SE measures how much a sample statistic (e.g., mean) bounces around if you repeat the study.
+
+```{r}
+# Calculate SE for exam scores
+se_exam <- sd(student$exam_score) / sqrt(length(student$exam_score))
+se_exam 
+```
+
+Interpretation:
+
+```{r}
+paste0("The mean exam score ", mean(student$exam_score), " would typically vary by ", 
+"±", round(se_exam, 2), " points if you repeated the survey")
+```
+
+## Confidence Interval
+
+A range of values that likely contains the true population parameter with a specified level of confidence (e.g., 95%).
+
+```{r}
+t_test_result <- t.test(student$exam_score, mu = 75)  # Test if mean ≠ 75
+t_test_result$conf.int 
+```
+
+-   Interpretation:
+
+```{r}
+paste0("We’re 95% confident the true average exam score is between ", round(t_test_result$conf.int[1], 2) ," and ", round(t_test_result$conf.int[2], 2))
+
+```
+
+## P-Value
+
+The p-value quantifies the probability of observing the data (or more extreme results) if the null hypothesis were true.
+
+| P-value Range | Interpretation |
+|-------------------------------|-----------------------------------------|
+| p \< 0.01 | Strong evidence against H₀ (highly significant) |
+| 0.01 ≤ p \< 0.05 | Moderate evidence against H₀ (statistically significant) |
+| p ≥ 0.05 | Weak/no evidence against H₀ (not statistically significant) |
+
+## Thresholds and Significance
+
+Why α = 0.05?
+
+Arbitrary but widely accepted balance between Type I (false positive) and Type II (false negative) errors.
+
+## Interpreation
+
+Null Hypothesis (H₀): *True mean = 75* Alternative (H₁): True mean ≠ 75
+
+```{r}
+t_test_result$p.value  
+```
+
+Interpretation:
+
+```{r}
+paste0("p = ", round(t_test_result$p.value, 8), " means there’s only a ", round(t_test_result$p.value, 8)* 100, "% chance of seeing a mean this extreme if the true average were 75.")
+```
+
+Conclusion: Reject the null (H₀) (mean ≠ 75) (true mean is statistically significantly higher than 75).
